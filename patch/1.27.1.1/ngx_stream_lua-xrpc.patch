@@ -582,7 +582,7 @@ diff --git src/ngx_stream_lua_socket_tcp.c src/ngx_stream_lua_socket_tcp.c
 +    /* NOTE: block_reading is set only on confirmed exit paths (data ready
 +     * or error).  The NGX_AGAIN path must NOT set block_reading because
 +     * doing so would suppress SSL posted_next_events and cause stalls
-+     * on TLS connections.  See read-any-ssl-block-investigation.md. */
++     * on TLS connections.  See xrpc-read-any-build.md §5.3. */
 +
 +    if (u->ft_type) {
 +        if (buf != NULL && u->buf_in && u->buf_in->buf
@@ -1116,7 +1116,7 @@ diff --git src/ngx_stream_lua_socket_tcp.c src/ngx_stream_lua_socket_tcp.c
 +     * This ensures that any SSL posted_next_events arriving between
 +     * co_yield() resumption and this call are properly dispatched
 +     * instead of being consumed by block_reading.
-+     * See: read-any-ssl-block-investigation.md section 6.2 */
++     * See: xrpc-read-any-build.md §5.3 */
 +    if (u->raw_downstream || u->body_downstream) {
 +#if (NGX_DEBUG)
 +        {
@@ -1370,7 +1370,7 @@ diff --git src/ngx_stream_lua_socket_tcp.c src/ngx_stream_lua_socket_tcp.c
 + *   then also call the original handler so stream-lua can process
 + *   any data that became available.
 + *
-+ * See: docs/tech/protocols/read-any-ssl-block-investigation.md §8-9
++ * See: docs/tech/protocols/xrpc-read-any-build.md §3.3, §5.1
 + */
 +static void
 +ngx_stream_lua_xrpc_composite_ssl_read_handler(ngx_event_t *rev)
@@ -1589,7 +1589,7 @@ diff --git src/ngx_stream_lua_socket_tcp.c src/ngx_stream_lua_socket_tcp.c
 +     * path restores the handler and clears saved_read_handler before
 +     * returning to us (blind spot).
 +     *
-+     * See: read-any-ssl-block-investigation.md §8-10 */
++     * See: xrpc-read-any-build.md §3.3, §5.1. */
 +    saved_rev_handler = NULL;
 +    if (u->raw_downstream && c->ssl) {
 +        saved_rev_handler = c->read->handler;
